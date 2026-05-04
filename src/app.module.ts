@@ -30,6 +30,7 @@ import { PaymentModule } from './payment/payment.module';
       autoSchemaFile: join(process.cwd(), 'src/schema/gql'),
       graphiql: true,
       context: ({ req }: { req: Request }) => ({ req }),
+      introspection: true,
     }),
     PrismaModule,
     AuthModule,
