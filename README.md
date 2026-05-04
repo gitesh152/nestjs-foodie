@@ -2,6 +2,8 @@
 
 Backend API for Foodie, built with NestJS, GraphQL, and Prisma.
 
+Built with NestJS, GraphQL, and Prisma—includes JWT auth, RBAC, order management, and the bonus country-based access control (data scoped by region).
+
 Primary purpose of this README: help contributors run the backend locally with minimum setup friction.
 
 ## Project Overview
