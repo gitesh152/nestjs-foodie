@@ -1,0 +1,717 @@
+{
+	"info": {
+		"_postman_id": "0cfd3c47-7887-4bba-baff-8bc4c4c53f1c",
+		"name": "nestjs-foodie",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20437470",
+		"_collection_link": "https://www.postman.com/mission-geologist-35075894/workspace/graphql/collection/20437470-0cfd3c47-7887-4bba-baff-8bc4c4c53f1c?action=share&source=collection_link&creator=20437470"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Login($input: AuthLoginInput!) {\n  login(\n    input: $input\n  ) {\n    accessToken\n    refreshToken\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"email\": \"{{manager1Email}}\",\n    \"password\": \"{{defaultPassword}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n    me  {\n        id name email country role\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    refresh (\n        refreshToken : \"{{refreshToken}}\"\n    ) {\n        accessToken \n        refreshToken\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    logout ( refreshToken: \"{{refreshToken}}\" ) {\n        success type message\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "global logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    logoutAll  {\n        success type message\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation Signup($input: AuthSignupInput!) {\n    signup (\n        input : $input\n    ) {\n        accessToken \n        refreshToken\n    }\n}\n",
+								"variables": "{\n  \"input\": {\n    \"name\": \"testuser1\",\n    \"email\": \"testuser1@yopmail.com\",\n    \"password\": \"{{defaultPassword}}\",\n    \"country\": \"INDIA\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {},
+						"exec": [
+							"const res = pm.response.json();",
+							"",
+							"// ❌ If GraphQL returned errors → do nothing",
+							"if (res.errors) {",
+							"  console.warn(\"GraphQL Error:\", res.errors[0].message);",
+							"  return;",
+							"}",
+							"",
+							"// ✅ If no data → skip",
+							"if (!res.data) return;",
+							"",
+							"// ✅ SIGNUP (if tokens returned)",
+							"if (res.data.signup?.accessToken) {",
+							"  pm.environment.set(\"accessToken\", res.data.signup.accessToken);",
+							"  pm.environment.set(\"refreshToken\", res.data.signup.refreshToken);",
+							"  console.log(\"Signup success → tokens saved\");",
+							"}",
+							"",
+							"// ✅ LOGIN",
+							"if (res.data.login?.accessToken) {",
+							"  pm.environment.set(\"accessToken\", res.data.login.accessToken);",
+							"  pm.environment.set(\"refreshToken\", res.data.login.refreshToken);",
+							"  console.log(\"Login success → tokens saved\");",
+							"}",
+							"",
+							"// ✅ REFRESH",
+							"if (res.data.refresh?.accessToken) {",
+							"  pm.environment.set(\"accessToken\", res.data.refresh.accessToken);",
+							"  pm.environment.set(\"refreshToken\", res.data.refresh.refreshToken);",
+							"  console.log(\"Refresh success → tokens saved\");",
+							"}",
+							"",
+							"// ✅ LOGOUT",
+							"if (res.data.logout) {",
+							"  pm.environment.unset(\"accessToken\");",
+							"  pm.environment.unset(\"refreshToken\");",
+							"  console.log(\"Logged out → tokens cleared\");",
+							"}",
+							"",
+							"// ✅ GLOBAL LOGOUT",
+							"if (res.data.logoutAll) {",
+							"  pm.environment.unset(\"accessToken\");",
+							"  pm.environment.unset(\"refreshToken\");",
+							"  console.log(\"Globally Logged out → tokens cleared\");",
+							"}"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "payment",
+			"item": [
+				{
+					"name": "Get Payment Methods",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n    paymentMethods  {\n        id cardLast4 brand\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Payment Method (Admin)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"",
+									"// ❌ Handle GraphQL errors safely",
+									"if (res.errors) {",
+									"  console.error(\"GraphQL Error:\", res.errors[0].message);",
+									"  return;",
+									"}",
+									"",
+									"// ✅ Extract paymentMethodId",
+									"const paymentMethodId = res?.data?.createPayment?.id;",
+									"",
+									"if (paymentMethodId) {",
+									"  pm.environment.set(\"paymentMethodId\", paymentMethodId);",
+									"  console.log(\"Payment Method ID saved:\", paymentMethodId);",
+									"} else {",
+									"  console.warn(\"Payment Method ID not found in response\");",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreatePayment($input: CreatePaymentInput!) {\n  createPayment(input: $input) {\n    id\n    cardLast4\n    brand\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"cardLast4\": \"3121\",\n    \"brand\": \"MASTERCARD\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Payment Method (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation UpdatePayment($input: UpdatePaymentInput!) {\n    updatePayment(input: $input) {\n        id cardLast4 brand\n    }\n}",
+								"variables": "{\n    \"input\": {\n        \"paymentMethodId\":\"{{paymentMethodId}}\" ,\n        \"cardLast4\":\"3343\"\n    }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "restaurent",
+			"item": [
+				{
+					"name": "Get Restaurants",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									"const res = pm.response.json();",
+									"",
+									"if (res.errors) {",
+									"  console.error(\"GraphQL Error:\", res.errors[0].message);",
+									"  return;",
+									"}",
+									"",
+									"const restaurantId = res?.data?.restaurants?.[0]?.id;",
+									"",
+									"if (restaurantId) {",
+									"  pm.environment.set(\"restaurantId\", restaurantId);",
+									"  console.log(\"Restaurant ID saved:\", restaurantId);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n    restaurants   {\n        id \n        name \n        menuItems {\n            id \n            name\n            price\n        }\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "menu",
+			"item": [
+				{
+					"name": "Get Menu",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+									"query": "query {\n    menu (restaurantId:\"{{restaurantId}}\")   {\n        id \n        name \n        price\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "Create Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"",
+									"// ❌ Handle GraphQL errors safely",
+									"if (res.errors) {",
+									"  console.error(\"GraphQL Error:\", res.errors[0].message);",
+									"  return;",
+									"}",
+									"",
+									"// ✅ Extract orderId",
+									"const orderId = res?.data?.createOrder?.id;",
+									"",
+									"if (orderId) {",
+									"  pm.environment.set(\"orderId\", orderId);",
+									"  console.log(\"Order ID saved:\", orderId);",
+									"} else {",
+									"  console.warn(\"Order ID not found in response\");",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CreateOrder($input: CreateOrderInput!) {\n    createOrder  (input: $input)  {\n        id status country totalAmount\n    }\n}\n",
+								"variables": "{\n    \"input\" :{}\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout Order (Manager and Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation CheckoutOrder($input: CheckoutOrderInput!) {\n    checkoutOrder (input : $input) \n    {\n        id \n        totalAmount \n        status \n        items {\n            id \n            quantity\n            menuItemId\n        }\n    }\n}",
+								"variables": "{\n  \"input\": {\n    \"orderId\": \"{{orderId}}\",\n    \"paymentMethodId\": \"{{paymentMethodId}}\"\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order (Manager and Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation {\n    cancelOrder(orderId : \"{{orderId}}\" , \n )   {\n        id status country totalAmount \n        items {\n            id \n            quantity \n            menuItemId        \n            }\n    }\n}\n",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order items",
+			"item": [
+				{
+					"name": "Add Order Items",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "mutation AddItem($input: AddItemInput!) {\n  addItem(\n    input: $input\n  ) {\n    id\n    items {\n      id\n      quantity\n      menuItemId\n    }\n    status\n    country\n    totalAmount\n  }\n}",
+								"variables": "{\n  \"input\": {\n    \"orderId\": \"{{orderId}}\",\n    \"menuItemId\": \"f645f8a3-e0a4-4a63-bb00-d7fc35392619\",\n    \"quantity\": 5\n  }\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}",
+							"host": [
+								"{{baseUrl}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

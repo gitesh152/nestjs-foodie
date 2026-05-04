@@ -1,0 +1,126 @@
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "./generated/prisma"
+  // moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}   
+
+enum Country {
+  INDIA
+  AMERICA
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model RefreshToken {
+  id      String   @id @default(uuid())
+
+  tokenHash     String   @unique
+  replacedByHash   String? // nullable
+
+  revoked DateTime?
+  expiresAt DateTime?
+  
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([userId, revoked]) // fast lookup for active tokens
+  @@index([expiresAt]) // useful for cleanup queries
+ }
+
+model User {
+  id String @id @default(uuid())
+  email String @unique()
+  name String
+  password String
+  role Role @default(MEMBER)
+  country Country
+  
+  refreshTokens RefreshToken[]
+
+  orders Order[]
+
+  payments PaymentMethod[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Order {
+  id String @id @default(uuid())
+  status OrderStatus @default(PENDING)
+  country Country
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  items OrderItem[]
+
+  totalAmount Float
+
+  paymentMethodId String?
+  paymentMethod PaymentMethod? @relation(fields: [paymentMethodId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderItem {
+  id String @id @default(uuid())
+  quantity Int
+
+  orderId String
+  order Order @relation(fields: [orderId],references: [id])
+
+  menuItemId String
+  menuItem MenuItem @relation(fields: [menuItemId],references: [id])
+}
+
+model MenuItem {
+  id String @id @default(uuid())
+  name String
+  price Float
+
+  restaurantId String
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+
+  orderItems OrderItem[]
+}
+
+model Restaurant {
+  id String @id @default(uuid())
+  name String
+  country Country
+
+  menuItems MenuItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PaymentMethod {
+  id String @id @default(uuid())
+  cardLast4 String
+  brand String
+
+  userId String
+  user User @relation(fields: [userId],references: [id])
+
+  orders Order[]
+}

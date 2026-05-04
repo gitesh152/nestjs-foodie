@@ -1,0 +1,133 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type LogoutResponse {
+  success: Boolean!
+  type: String!
+  message: String
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  country: Country!
+  role: Role!
+}
+
+enum Country {
+  INDIA
+  AMERICA
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  MEMBER
+}
+
+type OrderItem {
+  id: ID!
+  quantity: Int!
+  menuItemId: String!
+}
+
+type Order {
+  id: ID!
+  status: OrderStatus!
+  country: Country!
+  items: [OrderItem!]!
+  totalAmount: Float!
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+type MenuItem {
+  id: ID!
+  name: String!
+  price: Float!
+  restaurantId: ID!
+}
+
+type Restaurant {
+  id: ID!
+  name: String!
+  country: Country!
+  menuItems: [MenuItem!]!
+}
+
+type Payment {
+  id: ID!
+  cardLast4: String!
+  brand: String!
+}
+
+type Query {
+  health: String!
+  me: User!
+  restaurants: [Restaurant!]!
+  menu(restaurantId: String!): [MenuItem!]!
+  paymentMethods: [Payment!]!
+}
+
+type Mutation {
+  signup(input: AuthSignupInput!): AuthResponse!
+  login(input: AuthLoginInput!): AuthResponse!
+  refresh(refreshToken: String!): AuthResponse!
+  logout(refreshToken: String!): LogoutResponse!
+  logoutAll: LogoutResponse!
+  createOrder(input: CreateOrderInput!): Order!
+  addItem(input: AddItemInput!): Order!
+  checkoutOrder(input: CheckoutOrderInput!): Order!
+  cancelOrder(orderId: String!): Order!
+  createPayment(input: CreatePaymentInput!): Payment!
+  updatePayment(input: UpdatePaymentInput!): Payment!
+}
+
+input AuthSignupInput {
+  email: String!
+  name: String!
+  password: String!
+  country: Country!
+}
+
+input AuthLoginInput {
+  email: String!
+  password: String!
+}
+
+input CreateOrderInput {
+  country: Country
+}
+
+input AddItemInput {
+  orderId: ID!
+  menuItemId: ID!
+  quantity: Int!
+}
+
+input CheckoutOrderInput {
+  orderId: ID!
+  paymentMethodId: ID!
+}
+
+input CreatePaymentInput {
+  cardLast4: String!
+  brand: String!
+}
+
+input UpdatePaymentInput {
+  paymentMethodId: String!
+  cardLast4: String
+  brand: String
+}
